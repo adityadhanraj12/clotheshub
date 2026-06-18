@@ -32,9 +32,12 @@ class CheckoutController extends Controller
             ->where('address_type', 'invoice')
             ->first();
 
-        $shipping = UsersAddress::where('user_id', $userId)
-            ->where('address_type', 'shipping')
-            ->first();
+        $shipping = null;
+        if (session('different_shipping')) {
+            $shipping = UsersAddress::where('user_id', $userId)
+                ->where('address_type', 'shipping')
+                ->first();
+        }
         DB::beginTransaction();
         $subtotal = 0;
         foreach ($carts as $cart) {
@@ -51,8 +54,8 @@ class CheckoutController extends Controller
             'delivery_method' => session('delivery_method'),
             'payment_method' => session('payment_method'),
             'total_price' => $total,
-            'user_invoice_address' => $invoice ? json_encode($invoice->toArray()) : null,
-            'user_shipping_address' => $shipping ? json_encode($shipping->toArray()) : null,
+            'user_invoice_address' => $invoice ? $invoice->toArray() : null,
+            'user_shipping_address' => $shipping ? $shipping->toArray() : null,
         ]);
         $order->update([
             'total_price' => $total

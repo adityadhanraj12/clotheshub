@@ -189,6 +189,12 @@ class RouteController extends Controller
                     'phone_number' => $request->shipping_phone_number,
                 ]
             );
+            session(['different_shipping' => true]);
+        } else {
+            UsersAddress::where('user_id', $userId)
+                ->where('address_type', 'shipping')
+                ->delete();
+            session(['different_shipping' => false]);
         }
         return redirect()->route('checkout2');
     }

@@ -51,7 +51,7 @@
             </div>
         </div>
         <div class="row mt-5">
-            <div class="col-md-12">
+            <div class="col-md-6">
                 <div class="block">
                     <div class="block-header">
                         <h6 class="text-uppercase">Order Information</h6>
@@ -97,6 +97,53 @@
                             <strong>Total Amount:</strong>
                             ₹{{ number_format($order->total_price, 2) }}
                         </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="block">
+                    <div class="block-header">
+                        <h6 class="text-uppercase">Address Details</h6>
+                    </div>
+                    <div class="block-body">
+                        @php
+                            $invoiceAddr = $order->user_invoice_address;
+                            if (is_string($invoiceAddr)) {
+                                $invoiceAddr = json_decode($invoiceAddr, true);
+                            }
+                            $shippingAddr = $order->user_shipping_address;
+                            if (is_string($shippingAddr)) {
+                                $shippingAddr = json_decode($shippingAddr, true);
+                            }
+                        @endphp
+                        
+                        @if($invoiceAddr)
+                            <div class="mb-4">
+                                <h6 class="text-uppercase font-weight-bold" style="color: #9055A2; font-size: 0.9em; letter-spacing: 0.05em;">Invoice Address</h6>
+                                <p class="mb-1"><strong>{{ $invoiceAddr['first_name'] }} {{ $invoiceAddr['last_name'] ?? '' }}</strong></p>
+                                <p class="mb-1">{{ $invoiceAddr['street'] }}</p>
+                                <p class="mb-1">{{ $invoiceAddr['city'] }}, {{ $invoiceAddr['state'] }} - {{ $invoiceAddr['postal_code'] }}</p>
+                                <p class="mb-1">Phone: {{ $invoiceAddr['phone_number'] }}</p>
+                                <p class="mb-0">Email: {{ $invoiceAddr['email_address'] ?? ($invoiceAddr['email'] ?? '') }}</p>
+                            </div>
+                        @endif
+
+                        @if($shippingAddr)
+                            <div>
+                                <h6 class="text-uppercase font-weight-bold" style="color: #9055A2; font-size: 0.9em; letter-spacing: 0.05em;">Shipping Address</h6>
+                                <p class="mb-1"><strong>{{ $shippingAddr['first_name'] }} {{ $shippingAddr['last_name'] ?? '' }}</strong></p>
+                                <p class="mb-1">{{ $shippingAddr['street'] }}</p>
+                                <p class="mb-1">{{ $shippingAddr['city'] }}, {{ $shippingAddr['state'] }} - {{ $shippingAddr['postal_code'] }}</p>
+                                <p class="mb-1">Phone: {{ $shippingAddr['phone_number'] }}</p>
+                                <p class="mb-0">Email: {{ $shippingAddr['email_address'] ?? ($shippingAddr['email'] ?? '') }}</p>
+                            </div>
+                        @else
+                            <div>
+                                <h6 class="text-uppercase font-weight-bold" style="color: #9055A2; font-size: 0.9em; letter-spacing: 0.05em;">Shipping Address</h6>
+                                <p class="text-muted" style="font-size: 0.95em;">Same as invoice address</p>
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>

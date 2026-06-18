@@ -113,13 +113,13 @@
                   <!-- Shipping toggle -->
                   <div class="form-group col-12 mt-3 ml-3">
                     <input id="another-address" type="checkbox" name="different_shipping" value="1"
-                      class="checkbox-template" {{ old('different_shipping') ? 'checked' : '' }}>
+                      class="checkbox-template" {{ old('different_shipping', session('different_shipping', $shippingAddress ? 1 : 0)) ? 'checked' : '' }}>
                     <label for="another-address" data-toggle="collapse" data-target="#shippingAddress"> Use different
                       shipping address </label>
                   </div>
                 </div>
                 <!-- Shipping Address-->
-                <div id="shippingAddress" class="collapse {{ old('different_shipping') ? 'show' : '' }}">
+                <div id="shippingAddress" class="collapse {{ old('different_shipping', session('different_shipping', $shippingAddress ? 1 : 0)) ? 'show' : '' }}">
                   <div class="block-header mb-5 mt-3">
                     <h6>Shipping address</h6>
                   </div>
