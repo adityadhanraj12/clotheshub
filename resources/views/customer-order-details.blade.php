@@ -103,18 +103,43 @@
         </div>
         <div class="text-center mt-4 d-flex justify-content-center align-items-center flex-column flex-sm-row">
             @if($order->status === 'pending')
-                <form action="{{ route('customerOrder.cancel', $order->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to cancel this order?');" style="margin: 0; display: inline-block;">
-                    @csrf
-                    <button type="submit" class="btn btn-danger wide cancel-order-btn" style="border-radius: 20px; padding: 10px 30px; font-weight: bold; margin-right: 15px; text-transform: uppercase; letter-spacing: 0.05em;">
-                        Cancel Order
-                    </button>
-                </form>
+                <button type="button" class="btn btn-danger wide cancel-order-btn" data-toggle="modal" data-target="#cancelOrderModal" style="border-radius: 20px; padding: 10px 30px; font-weight: bold; margin-right: 15px; text-transform: uppercase; letter-spacing: 0.05em;">
+                    Cancel Order
+                </button>
             @endif
             <a href="{{ route('customerOrders') }}" class="btn btn-template-outlined wide prev back-orders-btn" style="border-radius: 20px; padding: 10px 30px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.05em;">
                 <i class="fa fa-angle-left"></i>
                 Back to Orders
             </a>
         </div>
+
+        @if($order->status === 'pending')
+            <!-- Cancel Order Confirmation Modal -->
+            <div id="cancelOrderModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" style="background: rgba(0,0,0,0.6); z-index: 9999;">
+              <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 550px;">
+                <div class="modal-content" style="border-radius: 0; border: none; position: relative;">
+                  <!-- Close button mimicking the overview close button -->
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="width: 50px; height: 50px; text-align: center; line-height: 50px; background: #9055A2; color: #fff; position: absolute; top: 0; right: 0; opacity: 1; font-size: 1.25rem; border: none; cursor: pointer; outline: none; z-index: 999; display: flex; align-items: center; justify-content: center; padding: 0;">
+                    <span>&times;</span>
+                  </button>
+                  
+                  <div class="modal-body" style="padding: 50px 30px; text-align: center;">
+                    <h4 class="text-uppercase mb-4" style="letter-spacing: 0.1em; font-weight: 700; color: #333;">Cancel Order</h4>
+                    <p style="font-weight: 300; line-height: 1.7em; color: #777; font-size: 1.1em; margin-bottom: 30px;">
+                      Are you sure you want to cancel this order?<br><strong>This action cannot be undone.</strong>
+                    </p>
+                    <div class="d-flex justify-content-center align-items-center">
+                      <button type="button" class="btn btn-secondary mr-2" data-dismiss="modal" style="border-radius: 20px; padding: 10px 30px; font-size: 0.9em; text-transform: uppercase; letter-spacing: 0.05em; margin-right: 10px;">Cancel</button>
+                      <form action="{{ route('customerOrder.cancel', $order->id) }}" method="POST" style="margin: 0;">
+                        @csrf
+                        <button type="submit" class="btn btn-template wide" style="border-radius: 20px; padding: 10px 30px; font-size: 0.9em; text-transform: uppercase; letter-spacing: 0.05em; background: #9055A2; border-color: #9055A2; color: #fff;">Cancel Order</button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        @endif
 
         <style>
             .back-orders-btn {
