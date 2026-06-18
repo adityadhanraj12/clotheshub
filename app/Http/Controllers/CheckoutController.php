@@ -91,4 +91,21 @@ class CheckoutController extends Controller
 
         return redirect()->route('checkout4');
     }
+
+    public function cancelOrder(Request $request, $id)
+    {
+        $order = Order::where('id', $id)
+            ->where('user_id', auth()->id())
+            ->firstOrFail();
+
+        if ($order->status !== 'pending') {
+            return back()->with('error', 'Only pending orders can be cancelled.');
+        }
+
+        $order->update([
+            'status' => 'cancelled'
+        ]);
+
+        return back()->with('success', 'Order cancelled successfully.');
+    }
 }

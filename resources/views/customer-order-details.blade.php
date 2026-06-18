@@ -2,6 +2,16 @@
 @section('section') <x-page-header title="Order Details" />
     <x-customer-sidebar />
     <div class="col-lg-8 col-xl-9 pl-lg-3">
+        @if(session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
+        @if(session('error'))
+            <div class="alert alert-danger">
+                {{ session('error') }}
+            </div>
+        @endif
         <div class="basket">
             <div class="basket-holder">
                 <div class="basket-header">
@@ -91,8 +101,16 @@
                 </div>
             </div>
         </div>
-        <div class="text-center mt-4">
-            <a href="{{ route('customerOrders') }}" class="btn btn-template-outlined wide prev back-orders-btn">
+        <div class="text-center mt-4 d-flex justify-content-center align-items-center flex-column flex-sm-row">
+            @if($order->status === 'pending')
+                <form action="{{ route('customerOrder.cancel', $order->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to cancel this order?');" style="margin: 0; display: inline-block;">
+                    @csrf
+                    <button type="submit" class="btn btn-danger wide cancel-order-btn" style="border-radius: 20px; padding: 10px 30px; font-weight: bold; margin-right: 15px; text-transform: uppercase; letter-spacing: 0.05em;">
+                        Cancel Order
+                    </button>
+                </form>
+            @endif
+            <a href="{{ route('customerOrders') }}" class="btn btn-template-outlined wide prev back-orders-btn" style="border-radius: 20px; padding: 10px 30px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.05em;">
                 <i class="fa fa-angle-left"></i>
                 Back to Orders
             </a>
@@ -108,6 +126,18 @@
             .back-orders-btn:hover {
                 background-color: #0069d9 !important;
                 border-color: #0062cc !important;
+                color: #fff !important;
+            }
+
+            .cancel-order-btn {
+                background-color: #dc3545 !important;
+                border-color: #dc3545 !important;
+                color: #fff !important;
+            }
+
+            .cancel-order-btn:hover {
+                background-color: #c82333 !important;
+                border-color: #bd2130 !important;
                 color: #fff !important;
             }
         </style>

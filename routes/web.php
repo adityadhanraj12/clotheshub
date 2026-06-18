@@ -71,4 +71,5 @@ Route::get('/order-success', function () {
 Route::post('/checkout3-submit', [RouteController::class, 'checkout3Submit'])->name('checkout3.submit');
 Route::post('/checkout2/save', [CheckoutController::class, 'saveDeliveryMethod'])->name('checkout2.save');
 Route::get('/customerOrders/{id}', [RouteController::class, 'customerOrderDetails'])->name('customerOrderDetails');
+Route::post('/customerOrders/{id}/cancel', [CheckoutController::class, 'cancelOrder'])->name('customerOrder.cancel')->middleware('auth');
 Route::get('/search', [ProductController::class, 'search'])->name('search');
