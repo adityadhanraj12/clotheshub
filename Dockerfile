@@ -15,6 +15,13 @@ ENV APACHE_DOCUMENT_ROOT /var/www/html/public
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
+# Configure Apache Directory permissions for Laravel public folder
+RUN echo '<Directory /var/www/html/public>\n\
+    Options Indexes FollowSymLinks\n\
+    AllowOverride All\n\
+    Require all granted\n\
+</Directory>' >> /etc/apache2/apache2.conf
+
 # Copy Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
@@ -26,8 +33,10 @@ COPY . .
 # Install Laravel dependencies
 RUN composer install --no-dev --optimize-autoloader
 
-# Set correct permissions so Apache (www-data) can read and write files
-RUN chown -R www-data:www-data /var/www/html && \
+# Normalize permissions (folders to 755, files to 644) and set ownership to Apache www-data
+RUN find /var/www/html -type d -exec chmod 755 {} \; && \
+    find /var/www/html -type f -exec chmod 644 {} \; && \
+    chown -R www-data:www-data /var/www/html && \
     chmod -R 775 storage bootstrap/cache
 
 # Runtime command to bind Apache to Render's dynamic $PORT and start the server
