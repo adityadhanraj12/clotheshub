@@ -23,7 +23,7 @@ class CartController extends Controller
 
         $currentQuantity = $cart ? $cart->quantity : 0;
         if ($currentQuantity + $request->quantity > 100) {
-            return redirect()->back()->withErrors([
+            return redirect()->back()->withInput()->withErrors([
                 'quantity' => "You can only order a maximum of 100 quantities per product. You already have {$currentQuantity} in your cart."
             ]);
         }

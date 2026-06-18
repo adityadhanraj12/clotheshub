@@ -176,10 +176,17 @@
                                     @csrf
                                     <input type="hidden" name="product_id" value="{{ $product->id }}">
                                     <label>Quantity</label>
-                                    <input type="number" name="quantity" value="1" min="1"
+                                    <input type="number" name="quantity" value="{{ old('product_id') == $product->id ? old('quantity') : 1 }}" min="1"
                                         style="width:60px; border-radius:20px; padding-left:12px;">
                                     <button type="submit" class="btn btn-template wide">Add to Cart</button>
                                 </form>
+                                @if($errors->any() && old('product_id') == $product->id)
+                                    <div class="alert alert-danger mt-2" style="background-color: #f8d7da; color: #721c24; border-color: #f5c6cb; padding: 10px; border-radius: 5px; font-size: 14px;">
+                                        @foreach($errors->all() as $error)
+                                            <div>{{ $error }}</div>
+                                        @endforeach
+                                    </div>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -187,4 +194,16 @@
             </div>
         </div>
     @endforeach
+    @if($errors->any() && old('product_id'))
+        <script>
+            window.addEventListener('DOMContentLoaded', (event) => {
+                const checkjQuery = setInterval(function() {
+                    if (window.jQuery) {
+                        clearInterval(checkjQuery);
+                        jQuery('#modal{{ old('product_id') }}').modal('show');
+                    }
+                }, 50);
+            });
+        </script>
+    @endif
 @endsection
