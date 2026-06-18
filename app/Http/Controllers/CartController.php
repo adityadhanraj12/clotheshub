@@ -9,6 +9,10 @@ class CartController extends Controller
 {
     public function addToCart(Request $request)
     {
+        if (!auth()->check()) {
+            return redirect()->route('customerLogin')->with('error', 'Please login first.');
+        }
+
         $request->validate([
             'product_id' => 'required|exists:products,id',
             'quantity' => 'required|integer|min:1|max:100',
@@ -44,6 +48,10 @@ class CartController extends Controller
     }
     public function index()
     {
+        if (!auth()->check()) {
+            return redirect()->route('customerLogin')->with('error', 'Please login first.');
+        }
+
         $carts = Cart::with('product')
             ->where(function ($query) {
                 $query->where('user_id', auth()->id())

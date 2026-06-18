@@ -89,10 +89,13 @@
                       <div class="col-lg-3"><strong class="text-uppercase">Home</strong>
                         <ul class="list-unstyled">
                           <li><a href="{{ route('index') }}">Homepage</a></li>
-                        </ul><strong class="text-uppercase">Cart</strong>
-                        <ul class="list-unstyled">
-                          <li><a href="{{ route('cart') }}">Shopping cart</a></li>
                         </ul>
+                        @auth
+                          <strong class="text-uppercase">Cart</strong>
+                          <ul class="list-unstyled">
+                            <li><a href="{{ route('cart') }}">Shopping cart</a></li>
+                          </ul>
+                        @endauth
                       </div>
                       <div class="col-lg-3"><strong class="text-uppercase">Shop</strong>
                         <ul class="list-unstyled">
@@ -191,6 +194,7 @@
                 </ul>
               </div>
             @endauth
+            @auth
             <!-- Cart Dropdown-->
             <div class="cart dropdown show"><a id="cartdetails" href="https://example.com" data-toggle="dropdown"
                 aria-haspopup="true" aria-expanded="false" class="dropdown-toggle"><i class="icon-cart"></i>
@@ -268,6 +272,7 @@
                 </div>
               </div>
             </div>
+            @endauth
           </div>
         </div>
       </div>
