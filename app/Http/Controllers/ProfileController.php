@@ -29,7 +29,15 @@ class ProfileController extends Controller
             'street' => 'nullable|string|max:255',
             'city' => 'nullable|string|max:100|regex:/^[A-Za-z\s]+$/',
 
-            'postal_code' => 'nullable|digits:6',
+            'postal_code' => [
+                'nullable',
+                'digits:6',
+                function ($attribute, $value, $fail) use ($request) {
+                    if (!self::validatePincodeForState($request->state, $value)) {
+                        $fail('Please enter correct pin code.');
+                    }
+                }
+            ],
 
             'state' => 'nullable|string|max:100',
 
@@ -82,5 +90,60 @@ class ProfileController extends Controller
         $request->session()->regenerateToken();
 
         return redirect()->route('index')->with('success', 'Your account has been deleted successfully.');
+    }
+
+    private static function validatePincodeForState(?string $state, ?string $pincode): bool
+    {
+        if (empty($state) || empty($pincode)) {
+            return true;
+        }
+        $pincode = trim($pincode);
+        if (strlen($pincode) < 1) {
+            return true;
+        }
+        $firstDigit = $pincode[0];
+        switch (strtolower(trim($state))) {
+            case 'bihar':
+            case 'jharkhand':
+                return $firstDigit === '8';
+            case 'uttar pradesh':
+            case 'uttarakhand':
+                return $firstDigit === '2';
+            case 'rajasthan':
+            case 'gujarat':
+                return $firstDigit === '3';
+            case 'maharashtra':
+            case 'goa':
+            case 'madhya pradesh':
+            case 'chhattisgarh':
+                return $firstDigit === '4';
+            case 'andhra pradesh':
+            case 'telangana':
+            case 'karnataka':
+                return $firstDigit === '5';
+            case 'tamil nadu':
+            case 'kerala':
+                return $firstDigit === '6';
+            case 'west bengal':
+            case 'odisha':
+            case 'assam':
+            case 'arunachal pradesh':
+            case 'manipur':
+            case 'meghalaya':
+            case 'mizoram':
+            case 'nagaland':
+            case 'sikkim':
+            case 'tripura':
+                return $firstDigit === '7';
+            case 'delhi':
+            case 'haryana':
+            case 'punjab':
+            case 'chandigarh':
+            case 'himachal pradesh':
+            case 'jammu & kashmir':
+                return $firstDigit === '1';
+            default:
+                return true;
+        }
     }
 }
