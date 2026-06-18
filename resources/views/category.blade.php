@@ -12,16 +12,16 @@
                             <ul class="list-unstyled">
                                 @foreach($categories as $category)
                                     <li>
-                                        <a href="{{ route('category', array_merge(request()->query(), ['category' => $category->id])) }}"
-                                            class="d-flex justify-content-between align-items-center">
+                                        <a href="{{ route('category', array_merge(request()->query(), ['category' => $category->id, 'collection' => null, 'page' => null])) }}"
+                                            class="d-flex justify-content-between align-items-center {{ request('category') == $category->id && !request('collection') ? 'text-primary font-weight-bold' : '' }}">
                                             <span>{{ $category->name }}</span>
                                             <small>{{ $category->products_count }}</small></a>
                                         @if($category->collections->count())
                                             <ul class="list-unstyled ms-3">
                                                 @foreach($category->collections as $collection)
                                                     <li>
-                                                        <a
-                                                            href="{{ route('category', array_merge(request()->query(), ['collection' => $collection->id])) }}">{{ $collection->name }}</a>
+                                                        <a class="{{ request('collection') == $collection->id ? 'text-primary font-weight-bold' : '' }}"
+                                                            href="{{ route('category', array_merge(request()->query(), ['category' => $category->id, 'collection' => $collection->id, 'page' => null])) }}">{{ $collection->name }}</a>
                                                     </li>
                                                 @endforeach
                                             </ul>
